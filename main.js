@@ -150,6 +150,7 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
     ctx.fillStyle = activeColor;
     ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth,cellHeight);
     drawText();
+   
     for(let i=0; i<chessPlate.length; i++)
     {
         if(chessPlate[i].figure!=null)
@@ -165,7 +166,7 @@ canvas.addEventListener('click', function(event) {
     let rect = canvas.getBoundingClientRect();
     clickX = event.clientX - rect.left;
     clickY = event.clientY - rect.top;
-    console.log("x: " +  clickX + " y: " + clickY); 
+   // console.log("x: " +  clickX + " y: " + clickY); 
     cellClick()
 }, false);
 
@@ -177,28 +178,33 @@ function ping()
 
 class Rook 
 {
+
+
 draw(x,y)
 {
-    Rook.sprite.onload=function()
-{
-ctx.drawImage(Rook.sprite,x ,y);
-console.log('drawed')
-} 
+ctx.drawImage(this.sprite,this.x-cellWidth,this.y-cellHeight, cellWidth, cellHeight);
+
 }
-constructor(color, x, y)
+
+constructor(color, square)
 {
-Rook.sprite=new Image();   
+    
+this.sprite=new Image();   
 this.color=color;
-this.x=x;
-this.y=y;
+this.x=square.coords.x;
+this.y=square.coords.y;
 if(this.color=="white")
 {
-    Rook.sprite.src="img/whiteRook.png"
+    this.sprite=new Image();
+    this.sprite.src="img/whiteRook.png";
+    
 }
 else
 {
-    Rook.sprite.src="img/blackRook.png"
+    this.sprite=new Image();
+    this.sprite.src="img/blackRook.png";
 }
+square.figure=this;
 this.draw(this.x-cellWidth,this.y-cellHeight);
 
 }
@@ -208,8 +214,19 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
 function setFigures()
 {
 
-let whiteRook=new Rook("white",chessPlate[0].coords.x, chessPlate[0].coords.y);
-chessPlate[0].figure=whiteRook;
+let whiteRook=new Rook("white", chessPlate[0]);
+let whiteRook2=new Rook("white", chessPlate[7]);
+let blackRook2=new Rook("black", chessPlate[63]);
+
+
+setTimeout(function(){for(let i=0; i<chessPlate.length; i++)
+    {
+        if(chessPlate[i].figure!=null)
+        {
+            chessPlate[i].figure.draw();
+        }
+    }},10)
+
 
 }
 setFigures();
