@@ -6,6 +6,7 @@ const activeColor="#237716";
 let clickX;
 let clickY;
 let prevActiveCell;
+let cellCanMove;
 let cellWidth=canvas.clientWidth/8;
 let cellHeight=canvas.clientHeight/8;
 let chessPlate=
@@ -21,7 +22,7 @@ let chessPlate=
 console.log("start");
 drawField();
 
-setInterval(ping,1000);
+setInterval(ping,100);
 function drawField()
 {
 
@@ -86,6 +87,16 @@ offsetX+=cellWidth;
 drawText();
 
 }
+function drawFigures()
+{
+    for(let i=0; i<chessPlate.length; i++)
+    {
+        if(chessPlate[i].figure!=null)
+        {
+            chessPlate[i].figure.draw();
+        }
+    }
+}
 function drawText(){
     ctx.font = "30px Arial";
     ctx.fillStyle = "green";
@@ -124,14 +135,9 @@ function drawText(){
     }
 function cellClick()
 {
-    
-for(let i=0;i<chessPlate.length;i++)
+function clearCells()
 {
-if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x && clickY<=chessPlate[i].coords.y && clickY>=chessPlate[i].coords.y-cellHeight) 
-{
-    if(prevActiveCell!=undefined)
-    {
-        if(prevActiveCell.color=="white")
+     if(prevActiveCell.color=="white")
         {
             ctx.fillStyle = whiteCellColor;
         }
@@ -139,25 +145,62 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
        {
         ctx.fillStyle = blackCellColor;
        }
+}
+    
+for(let i=0;i<chessPlate.length;i++)
+{
+if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x && clickY<=chessPlate[i].coords.y && clickY>=chessPlate[i].coords.y-cellHeight) 
+{
+    if(prevActiveCell!=undefined)
+    {
+       clearCells();
+
+       if(prevActiveCell.figure!=null)
+       {
+       cellCanMove=true;
+       }
+       if(cellCanMove && chessPlate[i].figure==null && prevActiveCell!=undefined )
+       {
+        chessPlate[i].figure=prevActiveCell.figure;
+        chessPlate[i].figure.x=chessPlate[i].coords.x;
+        chessPlate[i].figure.y=chessPlate[i].coords.y;
+        prevActiveCell.figure=null;
+        console.log(chessPlate[i].figure);
+        clearCells(); 
+        drawFigures();
+        
+        cellCanMove=false;
+       }
+
        ctx.fillRect(prevActiveCell.coords.x-cellWidth, prevActiveCell.coords.y-cellHeight, cellWidth,cellHeight);
        prevActiveCell.isActive=false;
-    }    
+       
+
+      
+       
+    }
     prevActiveCell=chessPlate[i];
     ctx.fillStyle = activeColor;
     ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth,cellHeight);  
     chessPlate[i].isActive=true;
-
-    ctx.fillStyle = activeColor;
-    ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth,cellHeight);
-    drawText();
-   
-    for(let i=0; i<chessPlate.length; i++)
+    if(cellCanMove==false)
     {
-        if(chessPlate[i].figure!=null)
+        //prevActiveCell=undefined;
+        if(chessPlate[i].color=="white")
         {
-            chessPlate[i].figure.draw();
+        ctx.fillStyle =whiteCellColor;  
         }
+        else
+        {
+        ctx.fillStyle=blackCellColor;
+        }
+
+        ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth,cellHeight);  
     }
+    drawText();
+    drawFigures();
+    console.log(cellCanMove)
+    
 }
 }
 }
@@ -173,13 +216,12 @@ canvas.addEventListener('click', function(event) {
 
 function ping()
 {
-    console.log('ping');
+   // console.log('ping')
+   let r;
+   r++;
 }
-
 class Rook 
 {
-
-
 draw(x,y)
 {
 ctx.drawImage(this.sprite,this.x-cellWidth,this.y-cellHeight, cellWidth, cellHeight);
@@ -216,16 +258,12 @@ function setFigures()
 
 let whiteRook=new Rook("white", chessPlate[0]);
 let whiteRook2=new Rook("white", chessPlate[7]);
-let blackRook2=new Rook("black", chessPlate[63]);
+let blackRook=new Rook("black", chessPlate[63]);
+let blackRook2=new Rook("black", chessPlate[56]);
 
 
-setTimeout(function(){for(let i=0; i<chessPlate.length; i++)
-    {
-        if(chessPlate[i].figure!=null)
-        {
-            chessPlate[i].figure.draw();
-        }
-    }},10)
+
+setTimeout(drawFigures,100)
 
 
 }

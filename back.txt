@@ -27,3 +27,11 @@ var chessPlate=
         }
         offsetY-=100;
     }
+
+
+    if(prevActiveCell.figure!=null && prevActiveCell.figure!=undefined)
+    {
+        chessPlate[i].figure = prevActiveCell.figure;
+        prevActiveCell.figure=null;
+        drawFigures();
+    }
