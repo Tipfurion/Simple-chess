@@ -151,22 +151,22 @@ for(let i=0;i<chessPlate.length;i++)
 {
 if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x && clickY<=chessPlate[i].coords.y && clickY>=chessPlate[i].coords.y-cellHeight) 
 {
+    chessPlate[i].isActive=true;
+    if(chessPlate[i].figure!=null && chessPlate[i].isActive)
+    {
+    cellCanMove=true;
+    }
     if(prevActiveCell!=undefined)
     {
        clearCells();
-
-       if(prevActiveCell.figure!=null)
-       {
-       cellCanMove=true;
-       }
        if(cellCanMove && chessPlate[i].figure==null && prevActiveCell!=undefined )
        {
         chessPlate[i].figure=prevActiveCell.figure;
         chessPlate[i].figure.x=chessPlate[i].coords.x;
         chessPlate[i].figure.y=chessPlate[i].coords.y;
         prevActiveCell.figure=null;
-        console.log(chessPlate[i].figure);
-        clearCells(); 
+        //console.log(chessPlate[i].figure);
+        //clearCells(); 
         drawFigures();
         
         cellCanMove=false;
@@ -182,7 +182,7 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
     prevActiveCell=chessPlate[i];
     ctx.fillStyle = activeColor;
     ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth,cellHeight);  
-    chessPlate[i].isActive=true;
+    //chessPlate[i].isActive=true;
     if(cellCanMove==false)
     {
         //prevActiveCell=undefined;
