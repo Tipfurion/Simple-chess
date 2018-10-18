@@ -4,6 +4,7 @@ const blackCellColor="#595959";
 const whiteCellColor="white";
 const activeColor="#237716";
 let clickX;
+let turn="white";
 let clickY;
 let nextCell;
 let prevActiveCell;
@@ -161,16 +162,37 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
     {
        clearCells();
        nextCell=chessPlate[i];
-       if(cellCanMove && chessPlate[i].figure==null && prevActiveCell!=undefined &&prevActiveCell.figure.move()==true )
-       {
+       if(cellCanMove && prevActiveCell!=undefined&& prevActiveCell.figure!=null &&prevActiveCell.figure.move()==true && turn==prevActiveCell.figure.color)
+       { 
+        if(chessPlate[i].figure==null)
+        {
         chessPlate[i].figure=prevActiveCell.figure;
         chessPlate[i].figure.x=chessPlate[i].coords.x;
         chessPlate[i].figure.y=chessPlate[i].coords.y;
         prevActiveCell.figure=null;
+        }
+        else if(chessPlate[i].figure.color!=prevActiveCell.figure.color)
+        {
+            chessPlate[i].figure=prevActiveCell.figure;
+            chessPlate[i].figure.x=chessPlate[i].coords.x;
+            chessPlate[i].figure.y=chessPlate[i].coords.y;
+            prevActiveCell.figure=null;
+        }
+
         //console.log(chessPlate[i].figure);
+        if(turn=="white")
+        {
+            turn="black";
+        }
+        else
+        {
+            turn="white";
+        }
         drawFigures();
         
         cellCanMove=false;
+      
+        
        }
 
        ctx.fillRect(prevActiveCell.coords.x-cellWidth, prevActiveCell.coords.y-cellHeight, cellWidth,cellHeight);
@@ -231,6 +253,7 @@ constructor(color, square)
 {   
 this.sprite=new Image();   
 this.color=color;
+this.square=square;
 this.x=square.coords.x;
 this.y=square.coords.y;
 if(this.color=="white")
@@ -244,11 +267,9 @@ else
     this.sprite=new Image();
     this.sprite.src="img/blackRook.png";
 }
-//square.figure=this;
 this.draw(this.x-cellWidth,this.y-cellHeight);
 }    
 }
-////////////////////////////////////////////
 class Rook extends Figure
 {
     constructor(color, square)
@@ -260,24 +281,25 @@ class Rook extends Figure
    {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
-       console.log(this.x, this.y);
-       console.log(this.nextX, this.nextY);
-       
-       return true;
+    if(this.x==this.nextX||this.y==this.nextY)
+    {
+        
+        return true;
+    }      
+    else
+    {
+        return false;
+    }
    }
     
 }
 
 function setFigures()
 {
-///////////////////////////////////////////
-
-
-
 let whiteRook=new Rook("white", chessPlate[0]);
-//let whiteRook2=new Figure("white", chessPlate[7]);
+let whiteRook2=new Rook("white", chessPlate[7]);
 let blackRook=new Rook("black", chessPlate[63]);
-//let blackRook2=new Figure("black", chessPlate[56]);
+let blackRook2=new Rook("black", chessPlate[56]);
 
 
 
