@@ -251,13 +251,20 @@ draw(x,y)
 ctx.drawImage(this.sprite,this.x-cellWidth,this.y-cellHeight, cellWidth, cellHeight);
 }
 constructor(color, square)
-{   
-this.sprite=new Image();   
+{     
 this.color=color;
 this.square=square;
 this.x=square.coords.x;
 this.y=square.coords.y;
-if(this.color=="white")
+}    
+}
+class Rook extends Figure
+{
+    constructor(color, square)
+    {
+        super(color, square);
+        square.figure=this;
+        if(this.color=="white")
 {
     this.sprite=new Image();
     this.sprite.src="img/whiteRook.png";
@@ -269,14 +276,6 @@ else
     this.sprite.src="img/blackRook.png";
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
-}    
-}
-class Rook extends Figure
-{
-    constructor(color, square)
-    {
-        super(color, square);
-        square.figure=this;
     }
    move()
    {
@@ -349,6 +348,77 @@ class Rook extends Figure
    }
     
 }
+class Bishop extends Figure
+{
+    constructor(color, square)
+    {
+        super(color, square);
+        square.figure=this;
+if(this.color=="white")
+{
+    this.sprite=new Image();
+    this.sprite.src="img/whiteBishop.png";
+    
+}
+else
+{
+    this.sprite=new Image();
+    this.sprite.src="img/blackBishop.png";
+}
+this.draw(this.x-cellWidth,this.y-cellHeight);
+    }
+    move()
+    {
+        this.nextX=nextCell.coords.x;
+        this.nextY=nextCell.coords.y;
+        this.square=prevActiveCell;
+        this.dX=Math.abs(this.nextX-this.x);
+        this.dY=Math.abs(this.nextY-this.y);
+        if(this.dX==this.dY)
+        {
+            let checkX=[]
+            if(this.y>=this.nextX)
+            {
+
+            
+            if(this.x<=this.nextX)
+            {
+             for(let i=this.square.number+9; i<nextCell.number; i+=9)
+             {
+                checkX.push(chessPlate[i]);
+             }
+            if(checkX.every(elem=>elem.figure==null)==true)
+            {
+                console.log(checkX);
+              checkX=[]
+              return true; 
+            }
+            }
+            else
+            {
+            for(let i=this.square.number+7; i<nextCell.number; i+=7)
+             {
+             checkX.push(chessPlate[i]);
+             }
+             if(checkX.every(elem=>elem.figure==null)==true)
+             {
+             console.log(checkX);
+             checkX=[]
+             return true;    
+            }
+        }
+        }
+        else
+        {
+            console.log("ss")
+        }
+    }
+        else
+        {
+            return false;
+        }
+    }     
+}
 
 function setFigures()
 {
@@ -356,6 +426,10 @@ let whiteRook=new Rook("white", chessPlate[0]);
 let whiteRook2=new Rook("white", chessPlate[7]);
 let blackRook=new Rook("black", chessPlate[63]);
 let blackRook2=new Rook("black", chessPlate[56]);
+let whiteBishop=new Bishop("white", chessPlate[2]);
+let whiteBishop2=new Bishop("white", chessPlate[5]);
+let blackBishop=new Bishop("black", chessPlate[61]);
+let blackBishop2=new Bishop("black", chessPlate[58]);
 
 
 
