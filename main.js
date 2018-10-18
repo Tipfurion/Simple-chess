@@ -36,6 +36,7 @@ for (let i=0;i<64;i++)
 {
     chessPlate[i].isActive=false;
     chessPlate[i].figure=null;
+    chessPlate[i].number=i;
     if(offsetX>=canvas.clientWidth)
     {
         if(whiteCellFirst==true)
@@ -281,13 +282,39 @@ class Rook extends Figure
    {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
+        this.square=prevActiveCell;
     if(this.x==this.nextX||this.y==this.nextY)
     {
-        
-        return true;
+       let checkX=[]
+       if(this.y>=this.nextY)
+       {
+        for(let i=this.square.number+8; i<nextCell.number; i+=8)
+        {
+         checkX.push(chessPlate[i]);
+        }
+       if(checkX.every(elem=>elem.figure==null)==true)
+       {
+         checkX=[]
+         return true; 
+       }
+       }
+       else
+       {
+        for(let i=this.square.number-8; i>nextCell.number; i-=8)
+        {
+         checkX.push(chessPlate[i]);
+        }
+       if(checkX.every(elem=>elem.figure==null)==true)
+       {
+         checkX=[]
+         return true; 
+       }
+       }
+       
     }      
     else
     {
+       // checkX=[]
         return false;
     }
    }

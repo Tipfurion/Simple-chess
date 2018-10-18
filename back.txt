@@ -35,3 +35,30 @@ var chessPlate=
         prevActiveCell.figure=null;
         drawFigures();
     }
+
+
+
+
+
+    move()
+   {
+        this.nextX=nextCell.coords.x;
+        this.nextY=nextCell.coords.y;
+    if(this.x==this.nextX||this.y==this.nextY)
+    {
+        let checkX=[];
+        for(let i=this.x;i<=this.nextX;i+=cellWidth)
+        {
+            checkX.push(i);
+        }
+        for(let i=0;i<chessPlate.length;i++)
+        {
+            if(chessPlate[i].coords.x==checkX[])    
+        }
+        return true;
+    }      
+    else
+    {
+        return false;
+    }
+   }
