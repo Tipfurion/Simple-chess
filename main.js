@@ -286,6 +286,8 @@ class Rook extends Figure
     if(this.x==this.nextX||this.y==this.nextY)
     {
        let checkX=[]
+       if(this.x==this.nextX)
+       {
        if(this.y>=this.nextY)
        {
         for(let i=this.square.number+8; i<nextCell.number; i+=8)
@@ -310,11 +312,38 @@ class Rook extends Figure
          return true; 
        }
        }
-       
+    }
+    else
+    {
+        if(this.x<=this.nextX)
+        {
+        for(let i=this.square.number+1; i<nextCell.number; i++)
+        {
+         checkX.push(chessPlate[i]);
+        }
+        if(checkX.every(elem=>elem.figure==null)==true)
+        {
+          checkX=[]
+          return true; 
+        }
+    }
+    else
+    {
+        for(let i=this.square.number-1; i>nextCell.number; i--)
+        {
+         checkX.push(chessPlate[i]);
+        }
+        if(checkX.every(elem=>elem.figure==null)==true)
+        {
+          checkX=[]
+          return true; 
+        }
+    }
+    }
+
     }      
     else
     {
-       // checkX=[]
         return false;
     }
    }
