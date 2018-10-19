@@ -377,7 +377,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         if(this.dX==this.dY)
         {
             let checkX=[]
-            if(this.y>=this.nextX)
+            if(this.y>=this.nextY)
             {
 
             
@@ -410,7 +410,35 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         }
         else
         {
+            if(this.x<=this.nextX)
+            {
+             for(let i=this.square.number-7; i>nextCell.number; i-=7)
+             {
+                checkX.push(chessPlate[i]);
+             }
+            if(checkX.every(elem=>elem.figure==null)==true)
+            {
+                console.log(checkX);
+              checkX=[]
+              return true; 
+            }
+            }
+            else
+            {
+            for(let i=this.square.number-9; i>nextCell.number; i-=9)
+             {
+             checkX.push(chessPlate[i]);
+             }
+             if(checkX.every(elem=>elem.figure==null)==true)
+             {
+             console.log(checkX);
+             checkX=[]
+             return true;    
+            }
+
             console.log("ss")
+
+        }
         }
     }
         else
@@ -419,6 +447,181 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         }
     }     
 }
+
+class Queen extends Figure
+{
+    constructor(color, square)
+    {
+        super(color, square);
+        square.figure=this;
+if(this.color=="white")
+{
+    this.sprite=new Image();
+    this.sprite.src="img/whiteQueen.png";
+    
+}
+else
+{
+    this.sprite=new Image();
+    this.sprite.src="img/blackQueen.png";
+}
+this.draw(this.x-cellWidth,this.y-cellHeight);
+    }
+    move()
+    {
+        this.nextX=nextCell.coords.x;
+        this.nextY=nextCell.coords.y;
+        this.square=prevActiveCell;
+        this.dX=Math.abs(this.nextX-this.x);
+        this.dY=Math.abs(this.nextY-this.y);
+
+        if(this.x==this.nextX||this.y==this.nextY || this.dX==this.dY)
+        {
+            let moveType;
+            //1-straight     2-curve
+            if(this.x==this.nextX||this.y==this.nextY)
+            {
+                moveType=1;
+            }
+            else
+            {
+                moveType=2;
+            }
+        if(moveType==1)
+      {
+        let checkX=[]
+        if(this.x==this.nextX)
+        {
+        if(this.y>=this.nextY)
+        {
+         for(let i=this.square.number+8; i<nextCell.number; i+=8)
+         {
+          checkX.push(chessPlate[i]);
+         }
+        if(checkX.every(elem=>elem.figure==null)==true)
+        {
+          checkX=[]
+          return true; 
+        }
+        }
+        else
+        {
+         for(let i=this.square.number-8; i>nextCell.number; i-=8)
+         {
+          checkX.push(chessPlate[i]);
+         }
+        if(checkX.every(elem=>elem.figure==null)==true)
+        {
+          checkX=[]
+          return true; 
+        }
+        }
+     }
+     else
+     {
+         if(this.x<=this.nextX)
+         {
+         for(let i=this.square.number+1; i<nextCell.number; i++)
+         {
+          checkX.push(chessPlate[i]);
+         }
+         if(checkX.every(elem=>elem.figure==null)==true)
+         {
+           checkX=[]
+           return true; 
+         }
+     }
+     else
+     {
+         for(let i=this.square.number-1; i>nextCell.number; i--)
+         {
+          checkX.push(chessPlate[i]);
+         }
+         if(checkX.every(elem=>elem.figure==null)==true)
+         {
+           checkX=[]
+           return true; 
+         }
+     }
+     }
+      } 
+        else
+        {
+            let checkX=[]
+            if(this.y>=this.nextY)
+            {
+
+            
+            if(this.x<=this.nextX)
+            {
+             for(let i=this.square.number+9; i<nextCell.number; i+=9)
+             {
+                checkX.push(chessPlate[i]);
+             }
+            if(checkX.every(elem=>elem.figure==null)==true)
+            {
+                console.log(checkX);
+              checkX=[]
+              return true; 
+            }
+            }
+            else
+            {
+            for(let i=this.square.number+7; i<nextCell.number; i+=7)
+             {
+             checkX.push(chessPlate[i]);
+             }
+             if(checkX.every(elem=>elem.figure==null)==true)
+             {
+             console.log(checkX);
+             checkX=[]
+             return true;    
+            }
+        }
+        }
+        else
+        {
+            if(this.x<=this.nextX)
+            {
+             for(let i=this.square.number-7; i>nextCell.number; i-=7)
+             {
+                checkX.push(chessPlate[i]);
+             }
+            if(checkX.every(elem=>elem.figure==null)==true)
+            {
+                console.log(checkX);
+              checkX=[]
+              return true; 
+            }
+            }
+            else
+            {
+            for(let i=this.square.number-9; i>nextCell.number; i-=9)
+             {
+             checkX.push(chessPlate[i]);
+             }
+             if(checkX.every(elem=>elem.figure==null)==true)
+             {
+             console.log(checkX);
+             checkX=[]
+             return true;    
+            }
+
+            console.log("ss")
+
+        }
+        }
+        }
+    }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+
+    
 
 function setFigures()
 {
@@ -430,6 +633,8 @@ let whiteBishop=new Bishop("white", chessPlate[2]);
 let whiteBishop2=new Bishop("white", chessPlate[5]);
 let blackBishop=new Bishop("black", chessPlate[61]);
 let blackBishop2=new Bishop("black", chessPlate[58]);
+let whiteQueen=new Queen("white", chessPlate[3]);
+let blackQueen=new Queen("black", chessPlate[59]);
 
 
 
