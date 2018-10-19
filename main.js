@@ -6,6 +6,8 @@ const activeColor="#237716";
 let clickX;
 let turn="white";
 let clickY;
+let whiteKing;
+let blackKing;
 let nextCell;
 let prevActiveCell;
 let cellCanMove;
@@ -21,7 +23,7 @@ let chessPlate=
  A7={},B7={},C7={},D7={},E7={},F7={},G7={},H7={},
  A8={},B8={},C8={},D8={},E8={},F8={},G8={},H8={},          
 ]
-console.log("start");
+
 drawField();
 
 setInterval(ping,100);
@@ -163,18 +165,49 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
     {
        clearCells();
        nextCell=chessPlate[i];
-       if(cellCanMove && prevActiveCell!=undefined&& prevActiveCell.figure!=null &&prevActiveCell.figure.move()==true && turn==prevActiveCell.figure.color)
-
+       
+       if(cellCanMove && prevActiveCell!=undefined&& prevActiveCell.figure!=null &&prevActiveCell.figure.move()==true && turn==prevActiveCell.figure.color )
        { 
-        if(chessPlate[i].figure==null || chessPlate[i].figure.color!=prevActiveCell.figure.color)
-        {
-        chessPlate[i].figure=prevActiveCell.figure;
-        chessPlate[i].figure.x=chessPlate[i].coords.x;
-        chessPlate[i].figure.y=chessPlate[i].coords.y;
-        prevActiveCell.figure=null;
+       
         
         
-        if(turn=="white")
+        if(chessPlate[i].figure==null || chessPlate[i].figure.color!=prevActiveCell.figure.color )
+        {  
+            let kingColor;
+            if(turn=="white")
+            {
+                kingColor=whiteKing;
+            }  
+            else
+            {
+                kingColor=blackKing;
+            }
+            if(kingColor.mate()!=true)
+            {
+                alert('мат');
+            }
+            if(kingColor.checkMate()==false)
+            {
+               
+                let tempFigure=prevActiveCell.figure;
+                let tempX=prevActiveCell.coords.x;
+                let tempY=prevActiveCell.coords.y;
+                chessPlate[i].figure=prevActiveCell.figure;
+                chessPlate[i].figure.x=chessPlate[i].coords.x;
+                chessPlate[i].figure.y=chessPlate[i].coords.y;
+                prevActiveCell.figure=null;
+                if(kingColor.checkMate()==false)
+                {
+                    //chessPlate[i].figure=tempFigure;
+                    chessPlate[i].figure.x=tempX;
+                    chessPlate[i].figure.y=tempY;
+                    prevActiveCell.figure=tempFigure;
+                    chessPlate[i].figure=null;
+                    
+                }
+                else
+                {
+                    if(turn=="white")
         {
             turn="black";
         }
@@ -183,7 +216,42 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
             turn="white";
         } 
         cellCanMove=false;
-    }  
+                }
+            }
+            else
+            {
+                let tempFigure=prevActiveCell.figure;
+                let tempX=prevActiveCell.coords.x;
+                let tempY=prevActiveCell.coords.y;
+                chessPlate[i].figure=prevActiveCell.figure;
+                chessPlate[i].figure.x=chessPlate[i].coords.x;
+                chessPlate[i].figure.y=chessPlate[i].coords.y;
+                prevActiveCell.figure=null; 
+                if(kingColor.checkMate()==false)
+                {
+                    //chessPlate[i].figure=tempFigure;
+                    chessPlate[i].figure.x=tempX;
+                    chessPlate[i].figure.y=tempY;
+                    prevActiveCell.figure=tempFigure;
+                    chessPlate[i].figure=null;
+                } 
+               else if(turn=="white")
+        {
+            turn="black";
+        }
+        else
+        {
+            turn="white";
+        } 
+        cellCanMove=false;
+            }
+       
+        
+        
+        
+      
+}
+
         drawFigures();
        }
 
@@ -197,7 +265,7 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
     prevActiveCell=chessPlate[i];
     ctx.fillStyle = activeColor;
     ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth,cellHeight);  
-    //chessPlate[i].isActive=true;
+   
     if(cellCanMove==false)
     {
         //prevActiveCell=undefined;
@@ -214,7 +282,7 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
     }
     drawText();
     drawFigures();
-   // console.log(cellCanMove)
+  
     
 }
 }
@@ -224,14 +292,14 @@ canvas.addEventListener('click', function(event) {
     let rect = canvas.getBoundingClientRect();
     clickX = event.clientX - rect.left;
     clickY = event.clientY - rect.top;
-   // console.log("x: " +  clickX + " y: " + clickY); 
+  
     cellClick()
 }, false);
 
 
 function ping()
 {
-   // console.log('ping')
+ 
    let r;
    r++;
 }
@@ -268,10 +336,15 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-   move()
+   move(kingX, kingY)
    {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
+        if(kingX!=undefined && kingY!=undefined)
+        {
+        this.nextX=kingX;
+        this.nextY=kingY
+        }
         this.square=prevActiveCell;
     if(this.x==this.nextX||this.y==this.nextY)
     {
@@ -358,10 +431,15 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move()
+    move(kingX, kingY)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
+        if(kingX!=undefined && kingY!=undefined)
+        {
+        this.nextX=kingX;
+        this.nextY=kingY
+        }
         this.square=prevActiveCell;
         this.dX=Math.abs(this.nextX-this.x);
         this.dY=Math.abs(this.nextY-this.y);
@@ -380,7 +458,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              }
             if(checkX.every(elem=>elem.figure==null)==true)
             {
-                console.log(checkX);
+              
               checkX=[]
               return true; 
             }
@@ -393,7 +471,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              }
              if(checkX.every(elem=>elem.figure==null)==true)
              {
-             console.log(checkX);
+            
              checkX=[]
              return true;    
             }
@@ -409,7 +487,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              }
             if(checkX.every(elem=>elem.figure==null)==true)
             {
-                console.log(checkX);
+                
               checkX=[]
               return true; 
             }
@@ -422,12 +500,12 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              }
              if(checkX.every(elem=>elem.figure==null)==true)
              {
-             console.log(checkX);
+          
              checkX=[]
              return true;    
             }
 
-            console.log("ss")
+         
 
         }
         }
@@ -458,10 +536,15 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move()
+    move(kingX, kingY)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
+        if(kingX!=undefined && kingY!=undefined)
+        {
+        this.nextX=kingX;
+        this.nextY=kingY
+        }
         this.square=prevActiveCell;
         this.dX=Math.abs(this.nextX-this.x);
         this.dY=Math.abs(this.nextY-this.y);
@@ -551,7 +634,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              }
             if(checkX.every(elem=>elem.figure==null)==true)
             {
-                console.log(checkX);
+             
               checkX=[]
               return true; 
             }
@@ -564,7 +647,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              }
              if(checkX.every(elem=>elem.figure==null)==true)
              {
-             console.log(checkX);
+            
              checkX=[]
              return true;    
             }
@@ -580,7 +663,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              }
             if(checkX.every(elem=>elem.figure==null)==true)
             {
-                console.log(checkX);
+               
               checkX=[]
               return true; 
             }
@@ -593,12 +676,12 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              }
              if(checkX.every(elem=>elem.figure==null)==true)
              {
-             console.log(checkX);
+            
              checkX=[]
              return true;    
             }
 
-            console.log("ss")
+            
 
         }
         }
@@ -630,10 +713,15 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move()
+    move(kingX, kingY)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
+        if(kingX!=undefined && kingY!=undefined)
+        {
+        this.nextX=kingX;
+        this.nextY=kingY
+        }
         this.square=prevActiveCell;
         this.dX=Math.abs(this.nextX-this.x);
         this.dY=Math.abs(this.nextY-this.y);
@@ -667,10 +755,15 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move()
+    move(kingX, kingY)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
+        if(kingX!=undefined && kingY!=undefined)
+        {
+        this.nextX=kingX;
+        this.nextY=kingY
+        }
         this.square=prevActiveCell;
         this.dX=Math.abs(this.nextX-this.x);
         this.dY=Math.abs(this.nextY-this.y);
@@ -695,12 +788,49 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             check.push(chessPlate[i])
         }
         }
-        if(check.every(elem=>elem.figure.move(this.x, this.y)==false)==false)
+        if(check.every(elem=>elem.figure.move(this.x, this.y)==false)==true)
         {
             check=[];
             return true;
         }
+        else
+        {
+            return false;
+        }
       //  }
+}
+mate()
+{
+    let check=[];
+    for(let i=0;i<chessPlate.length;i++)
+    {
+    if(chessPlate[i].figure!=null && chessPlate[i].figure.color==this.color)
+    {
+        check.push(chessPlate[i])
+    }
+    }
+    for(let i=0;i<check.length;i++)
+    {
+        for(let j=0;j<chessPlate.length;j++)
+        {
+            if(check[i].figure.move(chessPlate[j].coords.x, chessPlate[j].coords.y)==true)
+            {
+            if(this.checkMate()==true)
+            {
+                console.log(this.checkMate())
+                return true;
+            }
+            else
+            {
+                continue;
+            }
+        }
+        else
+        {
+            continue;
+        }
+        }
+}
 }
 }
 
@@ -724,10 +854,15 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move()
+    move(kingX,kingY)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
+        if(kingX!=undefined && kingY!=undefined)
+        {
+        this.nextX=kingX;
+        this.nextY=kingY
+        }
         this.dY=Math.abs(this.nextY-this.y);
         this.square=prevActiveCell;
         if(this.color=="white" && this.x==this.nextX && nextCell.figure==null)
@@ -782,6 +917,10 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
 
 function setFigures()
 {
+    if(false)
+    {
+
+    
 let whiteRook=new Rook("white", chessPlate[0]);
 let whiteRook2=new Rook("white", chessPlate[7]);
 let blackRook=new Rook("black", chessPlate[63]);
@@ -796,8 +935,8 @@ let whiteKnight=new Knight("white", chessPlate[1]);
 let whiteKnight2=new Knight("white", chessPlate[6]);
 let blackKnight=new Knight("black", chessPlate[62]);
 let blackKnight2=new Knight("black", chessPlate[57]);
-let whiteKing=new King("white", chessPlate[4]);
-let blackKing=new King("black", chessPlate[60]);
+whiteKing=new King("white", chessPlate[4]);
+blackKing=new King("black", chessPlate[60]);
 let whitePawn= new Pawn("white", chessPlate[8])
 let whitePawn2= new Pawn("white", chessPlate[9])
 let whitePawn3= new Pawn("white", chessPlate[10])
@@ -814,11 +953,17 @@ let blackPawn5= new Pawn("black",chessPlate[51])
 let blackPawn6= new Pawn("black",chessPlate[50])
 let blackPawn7= new Pawn("black",chessPlate[49])
 let blackPawn8= new Pawn("black",chessPlate[48])
-
-
-
+    }
+whiteKing=new King("white", chessPlate[4]);
+blackKing=new King("black", chessPlate[60]);
+let blackRook=new Rook("black", chessPlate[63]);
+let blackRook2=new Rook("black", chessPlate[56]);
+let whiteQueen=new Queen("white", chessPlate[3]);
+let blackQueen=new Queen("black", chessPlate[59]);
 setTimeout(drawFigures,100)
-
+}
+function globalCheckMate()
+{
 
 }
 setFigures();
