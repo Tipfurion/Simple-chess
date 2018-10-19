@@ -683,6 +683,25 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             return false;
         }
     }
+    checkMate()
+    {
+       // if(this.color=="white")
+       // {
+            let check=[];
+        for(let i=0;i<chessPlate.length;i++)
+        {
+        if(chessPlate[i].figure!=null && chessPlate[i].figure.color!=this.color)
+        {
+            check.push(chessPlate[i])
+        }
+        }
+        if(check.every(elem=>elem.figure.move(this.x, this.y)==false)==false)
+        {
+            check=[];
+            return true;
+        }
+      //  }
+}
 }
 
 class Pawn extends Figure
