@@ -164,23 +164,16 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
        clearCells();
        nextCell=chessPlate[i];
        if(cellCanMove && prevActiveCell!=undefined&& prevActiveCell.figure!=null &&prevActiveCell.figure.move()==true && turn==prevActiveCell.figure.color)
+
        { 
-        if(chessPlate[i].figure==null)
+        if(chessPlate[i].figure==null || chessPlate[i].figure.color!=prevActiveCell.figure.color)
         {
         chessPlate[i].figure=prevActiveCell.figure;
         chessPlate[i].figure.x=chessPlate[i].coords.x;
         chessPlate[i].figure.y=chessPlate[i].coords.y;
         prevActiveCell.figure=null;
-        }
-        else if(chessPlate[i].figure.color!=prevActiveCell.figure.color)
-        {
-            chessPlate[i].figure=prevActiveCell.figure;
-            chessPlate[i].figure.x=chessPlate[i].coords.x;
-            chessPlate[i].figure.y=chessPlate[i].coords.y;
-            prevActiveCell.figure=null;
-        }
-
-        //console.log(chessPlate[i].figure);
+        
+        
         if(turn=="white")
         {
             turn="black";
@@ -188,12 +181,10 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
         else
         {
             turn="white";
-        }
-        drawFigures();
-        
+        } 
         cellCanMove=false;
-      
-        
+    }  
+        drawFigures();
        }
 
        ctx.fillRect(prevActiveCell.coords.x-cellWidth, prevActiveCell.coords.y-cellHeight, cellWidth,cellHeight);
@@ -620,6 +611,153 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
     }
 }
 
+class Knight extends Figure
+{
+    constructor(color, square)
+    {
+        super(color, square);
+        square.figure=this;
+if(this.color=="white")
+{
+    this.sprite=new Image();
+    this.sprite.src="img/whiteKnight.png";
+    
+}
+else
+{
+    this.sprite=new Image();
+    this.sprite.src="img/blackKnight.png";
+}
+this.draw(this.x-cellWidth,this.y-cellHeight);
+    }
+    move()
+    {
+        this.nextX=nextCell.coords.x;
+        this.nextY=nextCell.coords.y;
+        this.square=prevActiveCell;
+        this.dX=Math.abs(this.nextX-this.x);
+        this.dY=Math.abs(this.nextY-this.y);
+        if(this.dX==cellWidth*2 && this.dY==cellHeight|| this.dX==cellWidth && this.dY==cellHeight*2)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+class King extends Figure
+{
+    constructor(color, square)
+    {
+        super(color, square);
+        square.figure=this;
+if(this.color=="white")
+{
+    this.sprite=new Image();
+    this.sprite.src="img/whiteKing.png";
+    
+}
+else
+{
+    this.sprite=new Image();
+    this.sprite.src="img/blackKing.png";
+}
+this.draw(this.x-cellWidth,this.y-cellHeight);
+    }
+    move()
+    {
+        this.nextX=nextCell.coords.x;
+        this.nextY=nextCell.coords.y;
+        this.square=prevActiveCell;
+        this.dX=Math.abs(this.nextX-this.x);
+        this.dY=Math.abs(this.nextY-this.y);
+        if(this.x==this.nextX && this.dY==cellHeight ||this.y==this.nextY &&this.dX==cellWidth ||this.dY==this.dY && this.dX==cellWidth && this.dY==cellHeight  )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+class Pawn extends Figure
+{
+    constructor(color, square)
+    {
+        super(color, square);
+        square.figure=this;
+        this.startY=this.y;
+if(this.color=="white")
+{
+    this.sprite=new Image();
+    this.sprite.src="img/whitePawn.png";
+    
+}
+else
+{
+    this.sprite=new Image();
+    this.sprite.src="img/blackPawn.png";
+}
+this.draw(this.x-cellWidth,this.y-cellHeight);
+    }
+    move()
+    {
+        this.nextX=nextCell.coords.x;
+        this.nextY=nextCell.coords.y;
+        this.dY=Math.abs(this.nextY-this.y);
+        this.square=prevActiveCell;
+        if(this.color=="white" && this.x==this.nextX && nextCell.figure==null)
+        {
+            if(this.y==this.startY )
+            {
+                if(this.dY<=cellHeight*2)
+                {
+                    
+                    return true;
+                }
+            }
+            else
+            {
+                if(this.dY==cellHeight)
+                {
+                    return true;
+                }
+            }
+        }
+        else if(this.color=="white"  && nextCell.figure!=null && this.nextX==this.x+cellWidth || this.nextX==this.x-cellWidth)
+        {
+            return true;
+        }
+        else if(this.color=="black" && this.x==this.nextX && nextCell.figure==null)
+        {
+            if(this.y==this.startY )
+            {
+                if(this.dY<=cellHeight*2)
+                {
+                    
+                    return true;
+                }
+            }
+            else
+            {
+                if(this.dY==cellHeight)
+                {
+                    return true;
+                }
+            }
+        }
+        else if(this.color=="black"  && nextCell.figure!=null && this.nextX==this.x+cellWidth || this.nextX==this.x-cellWidth)
+        {
+            return true;
+        }
+    }
+}
+
 
     
 
@@ -635,6 +773,28 @@ let blackBishop=new Bishop("black", chessPlate[61]);
 let blackBishop2=new Bishop("black", chessPlate[58]);
 let whiteQueen=new Queen("white", chessPlate[3]);
 let blackQueen=new Queen("black", chessPlate[59]);
+let whiteKnight=new Knight("white", chessPlate[1]);
+let whiteKnight2=new Knight("white", chessPlate[6]);
+let blackKnight=new Knight("black", chessPlate[62]);
+let blackKnight2=new Knight("black", chessPlate[57]);
+let whiteKing=new King("white", chessPlate[4]);
+let blackKing=new King("black", chessPlate[60]);
+let whitePawn= new Pawn("white", chessPlate[8])
+let whitePawn2= new Pawn("white", chessPlate[9])
+let whitePawn3= new Pawn("white", chessPlate[10])
+let whitePawn4= new Pawn("white", chessPlate[11])
+let whitePawn5= new Pawn("white", chessPlate[12])
+let whitePawn6= new Pawn("white", chessPlate[13])
+let whitePawn7= new Pawn("white", chessPlate[14])
+let whitePawn8= new Pawn("white", chessPlate[15])
+let blackPawn= new Pawn("black",chessPlate[55])
+let blackPawn2= new Pawn("black",chessPlate[54])
+let blackPawn3= new Pawn("black",chessPlate[53])
+let blackPawn4= new Pawn("black",chessPlate[52])
+let blackPawn5= new Pawn("black",chessPlate[51])
+let blackPawn6= new Pawn("black",chessPlate[50])
+let blackPawn7= new Pawn("black",chessPlate[49])
+let blackPawn8= new Pawn("black",chessPlate[48])
 
 
 
