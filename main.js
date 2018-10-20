@@ -182,10 +182,10 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
             {
                 kingColor=blackKing;
             }
-            if(kingColor.mate()!=true)
-            {
-                alert('мат');
-            }
+           // if(kingColor.mate()!=true)
+           // {
+            //    alert('мат');
+           // }
             if(kingColor.checkMate()==false)
             {
                
@@ -198,9 +198,9 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
                 prevActiveCell.figure=null;
                 if(kingColor.checkMate()==false)
                 {
-                    //chessPlate[i].figure=tempFigure;
-                    chessPlate[i].figure.x=tempX;
-                    chessPlate[i].figure.y=tempY;
+                   chessPlate[i].figure=tempFigure;
+                 chessPlate[i].figure.x=tempX;
+                  chessPlate[i].figure.y=tempY;
                     prevActiveCell.figure=tempFigure;
                     chessPlate[i].figure=null;
                     
@@ -229,9 +229,9 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
                 prevActiveCell.figure=null; 
                 if(kingColor.checkMate()==false)
                 {
-                    //chessPlate[i].figure=tempFigure;
-                    chessPlate[i].figure.x=tempX;
-                    chessPlate[i].figure.y=tempY;
+                 chessPlate[i].figure=tempFigure;
+                   chessPlate[i].figure.x=tempX;
+                   chessPlate[i].figure.y=tempY;
                     prevActiveCell.figure=tempFigure;
                     chessPlate[i].figure=null;
                 } 
@@ -815,21 +815,37 @@ mate()
         {
             if(check[i].figure.move(chessPlate[j].coords.x, chessPlate[j].coords.y)==true)
             {
-            if(this.checkMate()==true)
-            {
-                console.log(this.checkMate())
-                return true;
-            }
-            else
-            {
-                continue;
-            }
+                let tempFigure=check[i].figure;
+                let tempX=check[i].coords.x;
+                let tempY=check[i].coords.y;
+                chessPlate[j].figure=check[i].figure;
+                chessPlate[j].figure.x=check[i].coords.x;
+                chessPlate[j].figure.y=check[i].coords.y;
+                check[i].figure=null;
+                if(this.checkMate()==true)
+                {
+                    check[i].figure=tempFigure;
+                   check[i].figure.x=tempX;
+                   check[i].figure.y=tempY;
+                    chessPlate[j].figure=null;
+                    return true;
+                }
+                
+                else
+                {    
+                    check[i].figure=tempFigure;
+                    check[i].figure.x=tempX;
+                    check[i].figure.y=tempY;
+                    chessPlate[j].figure=null;
+                    continue;
+                } 
         }
         else
         {
             continue;
         }
         }
+    
 }
 }
 }
