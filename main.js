@@ -8,6 +8,8 @@ let turn="white";
 let clickY;
 let whiteKing;
 let blackKing;
+let kingColor;
+let winCheckKingColor;
 let nextCell;
 let prevActiveCell;
 let cellCanMove;
@@ -156,6 +158,7 @@ for(let i=0;i<chessPlate.length;i++)
 {
 if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x && clickY<=chessPlate[i].coords.y && clickY>=chessPlate[i].coords.y-cellHeight) 
 {
+    
     chessPlate[i].isActive=true;
     if(chessPlate[i].figure!=null && chessPlate[i].isActive)
     {
@@ -173,7 +176,7 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
         
         if(chessPlate[i].figure==null || chessPlate[i].figure.color!=prevActiveCell.figure.color )
         {  
-            let kingColor;
+           
             if(turn=="white")
             {
                 kingColor=whiteKing;
@@ -182,28 +185,34 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
             {
                 kingColor=blackKing;
             }
-           // if(kingColor.mate()!=true)
-           // {
-            //    alert('мат');
-           // }
-            if(kingColor.checkMate()==false)
-            {
-               
                 let tempFigure=prevActiveCell.figure;
                 let tempX=prevActiveCell.coords.x;
                 let tempY=prevActiveCell.coords.y;
                 chessPlate[i].figure=prevActiveCell.figure;
                 chessPlate[i].figure.x=chessPlate[i].coords.x;
                 chessPlate[i].figure.y=chessPlate[i].coords.y;
+                chessPlate[i].figure.square=chessPlate[i];
                 prevActiveCell.figure=null;
-                if(kingColor.checkMate()==false)
+               
+                if(turn=="white")
                 {
-                   chessPlate[i].figure=tempFigure;
-                 chessPlate[i].figure.x=tempX;
-                  chessPlate[i].figure.y=tempY;
+                    winCheckKingColor=blackKing;
+                }  
+                else
+                {
+                   winCheckKingColor=whiteKing;
+                }
+                if(winCheckKingColor.mate()!=true)
+                {
+                    alert('ss')
+                }
+               
+                if(kingColor.checkMate()==false)
+                {    
                     prevActiveCell.figure=tempFigure;
+                    prevActiveCell.figure.x=tempX;
+                    prevActiveCell.figure.y=tempY;
                     chessPlate[i].figure=null;
-                    
                 }
                 else
                 {
@@ -216,40 +225,9 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
             turn="white";
         } 
         cellCanMove=false;
-                }
-            }
-            else
-            {
-                let tempFigure=prevActiveCell.figure;
-                let tempX=prevActiveCell.coords.x;
-                let tempY=prevActiveCell.coords.y;
-                chessPlate[i].figure=prevActiveCell.figure;
-                chessPlate[i].figure.x=chessPlate[i].coords.x;
-                chessPlate[i].figure.y=chessPlate[i].coords.y;
-                prevActiveCell.figure=null; 
-                if(kingColor.checkMate()==false)
-                {
-                 chessPlate[i].figure=tempFigure;
-                   chessPlate[i].figure.x=tempX;
-                   chessPlate[i].figure.y=tempY;
-                    prevActiveCell.figure=tempFigure;
-                    chessPlate[i].figure=null;
-                } 
-               else if(turn=="white")
-        {
-            turn="black";
-        }
-        else
-        {
-            turn="white";
-        } 
-        cellCanMove=false;
-            }
        
+                }
         
-        
-        
-      
 }
 
         drawFigures();
@@ -268,7 +246,6 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
    
     if(cellCanMove==false)
     {
-        //prevActiveCell=undefined;
         if(chessPlate[i].color=="white")
         {
         ctx.fillStyle =whiteCellColor;  
@@ -340,20 +317,24 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
    {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
+        this.nextCell=nextCell;
+        //this.square=prevActiveCell;
         if(kingX!=undefined && kingY!=undefined)
         {
+        this.nextCell=kingColor.square;
         this.nextX=kingX;
-        this.nextY=kingY
-        }
-        this.square=prevActiveCell;
-    if(this.x==this.nextX||this.y==this.nextY)
-    {
+        this.nextY=kingY;
+        }   
+   if(this.x==this.nextX|| this.y==this.nextY)
+   {
+
+   
        let checkX=[]
        if(this.x==this.nextX)
        {
        if(this.y>=this.nextY)
        {
-        for(let i=this.square.number+8; i<nextCell.number; i+=8)
+        for(let i=this.square.number+8; i<this.nextCell.number; i+=8)
         {
          checkX.push(chessPlate[i]);
         }
@@ -361,11 +342,15 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
        {
          checkX=[]
          return true; 
+       }
+       else
+       {
+           return false;
        }
        }
        else
        {
-        for(let i=this.square.number-8; i>nextCell.number; i-=8)
+        for(let i=this.square.number-8; i>this.nextCell.number; i-=8)
         {
          checkX.push(chessPlate[i]);
         }
@@ -373,6 +358,10 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
        {
          checkX=[]
          return true; 
+       }
+       else
+       {
+           return false;
        }
        }
     }
@@ -380,7 +369,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
     {
         if(this.x<=this.nextX)
         {
-        for(let i=this.square.number+1; i<nextCell.number; i++)
+        for(let i=this.square.number+1; i<this.nextCell.number; i++)
         {
          checkX.push(chessPlate[i]);
         }
@@ -388,11 +377,15 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         {
           checkX=[]
           return true; 
+        }
+        else
+        {
+            return false;
         }
     }
     else
     {
-        for(let i=this.square.number-1; i>nextCell.number; i--)
+        for(let i=this.square.number-1; i>this.nextCell.number; i--)
         {
          checkX.push(chessPlate[i]);
         }
@@ -401,11 +394,15 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
           checkX=[]
           return true; 
         }
+        else
+        {
+            return false;
+        }
     }
     }
 
-    }      
-    else
+} 
+    else 
     {
         return false;
     }
@@ -435,10 +432,12 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
+        this.nextCell=nextCell;
         if(kingX!=undefined && kingY!=undefined)
         {
         this.nextX=kingX;
         this.nextY=kingY
+        this.nextCell=kingColor.square;
         }
         this.square=prevActiveCell;
         this.dX=Math.abs(this.nextX-this.x);
@@ -452,7 +451,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             
             if(this.x<=this.nextX)
             {
-             for(let i=this.square.number+9; i<nextCell.number; i+=9)
+             for(let i=this.square.number+9; i<this.nextCell.number; i+=9)
              {
                 checkX.push(chessPlate[i]);
              }
@@ -465,7 +464,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             }
             else
             {
-            for(let i=this.square.number+7; i<nextCell.number; i+=7)
+            for(let i=this.square.number+7; i<this.nextCell.number; i+=7)
              {
              checkX.push(chessPlate[i]);
              }
@@ -481,7 +480,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         {
             if(this.x<=this.nextX)
             {
-             for(let i=this.square.number-7; i>nextCell.number; i-=7)
+             for(let i=this.square.number-7; i>this.nextCell.number; i-=7)
              {
                 checkX.push(chessPlate[i]);
              }
@@ -494,7 +493,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             }
             else
             {
-            for(let i=this.square.number-9; i>nextCell.number; i-=9)
+            for(let i=this.square.number-9; i>this.nextCell.number; i-=9)
              {
              checkX.push(chessPlate[i]);
              }
@@ -536,16 +535,21 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move(kingX, kingY)
+    move(kingX, kingY, nextCelll)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
-        if(kingX!=undefined && kingY!=undefined)
+        this.nextCell=nextCell;
+        if(kingX!=undefined && kingY!=undefined )
         {
         this.nextX=kingX;
-        this.nextY=kingY
+        this.nextY=kingY;
+        this.nextCell=kingColor.square;
         }
-        this.square=prevActiveCell;
+       else{
+         this.square=prevActiveCell;
+        }
+        
         this.dX=Math.abs(this.nextX-this.x);
         this.dY=Math.abs(this.nextY-this.y);
 
@@ -568,7 +572,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         {
         if(this.y>=this.nextY)
         {
-         for(let i=this.square.number+8; i<nextCell.number; i+=8)
+         for(let i=this.square.number+8; i<=this.nextCell.number-8; i+=8)   // for(let i=this.square.number+8; i<this.nextCell.number; i+=8) 
          {
           checkX.push(chessPlate[i]);
          }
@@ -576,11 +580,15 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         {
           checkX=[]
           return true; 
+        }
+        else
+        {
+            return false;
         }
         }
         else
         {
-         for(let i=this.square.number-8; i>nextCell.number; i-=8)
+         for(let i=this.square.number-8; i>=this.nextCell.number+8; i-=8) //for(let i=this.square.number-8; i>this.nextCell.number; i-=8)
          {
           checkX.push(chessPlate[i]);
          }
@@ -588,6 +596,10 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         {
           checkX=[]
           return true; 
+        }
+        else
+        {
+            return false;
         }
         }
      }
@@ -595,7 +607,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
      {
          if(this.x<=this.nextX)
          {
-         for(let i=this.square.number+1; i<nextCell.number; i++)
+         for(let i=this.square.number+1; i<this.nextCell.number; i++)
          {
           checkX.push(chessPlate[i]);
          }
@@ -603,11 +615,15 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
          {
            checkX=[]
            return true; 
+         }
+         else
+         {
+             return false;
          }
      }
      else
      {
-         for(let i=this.square.number-1; i>nextCell.number; i--)
+         for(let i=this.square.number-1; i>this.nextCell.number; i--)
          {
           checkX.push(chessPlate[i]);
          }
@@ -615,6 +631,10 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
          {
            checkX=[]
            return true; 
+         }
+         else
+         {
+             return false;
          }
      }
      }
@@ -628,7 +648,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             
             if(this.x<=this.nextX)
             {
-             for(let i=this.square.number+9; i<nextCell.number; i+=9)
+             for(let i=this.square.number+9; i<this.nextCell.number; i+=9)
              {
                 checkX.push(chessPlate[i]);
              }
@@ -638,10 +658,14 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
               checkX=[]
               return true; 
             }
+            else
+            {
+                return false;
+            }
             }
             else
             {
-            for(let i=this.square.number+7; i<nextCell.number; i+=7)
+            for(let i=this.square.number+7; i<this.nextCell.number; i+=7)
              {
              checkX.push(chessPlate[i]);
              }
@@ -651,13 +675,17 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              checkX=[]
              return true;    
             }
+            else
+            {
+                return false;
+            }
         }
         }
         else
         {
             if(this.x<=this.nextX)
             {
-             for(let i=this.square.number-7; i>nextCell.number; i-=7)
+             for(let i=this.square.number-7; i>this.nextCell.number; i-=7)
              {
                 checkX.push(chessPlate[i]);
              }
@@ -667,10 +695,14 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
               checkX=[]
               return true; 
             }
+            else
+            {
+                return false;
+            }
             }
             else
             {
-            for(let i=this.square.number-9; i>nextCell.number; i-=9)
+            for(let i=this.square.number-9; i>this.nextCell.number; i-=9)
              {
              checkX.push(chessPlate[i]);
              }
@@ -679,6 +711,10 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             
              checkX=[]
              return true;    
+            }
+            else
+            {
+                return false;
             }
 
             
@@ -759,12 +795,16 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
-        if(kingX!=undefined && kingY!=undefined)
+        if(kingX!=undefined && kingY!=undefined )
         {
         this.nextX=kingX;
-        this.nextY=kingY
+        this.nextY=kingY;
+        this.nextCell=kingColor.square;
         }
-        this.square=prevActiveCell;
+       // else
+       // {
+           // this.square=prevActiveCell;
+       // }
         this.dX=Math.abs(this.nextX-this.x);
         this.dY=Math.abs(this.nextY-this.y);
         if(this.x==this.nextX && this.dY==cellHeight ||this.y==this.nextY &&this.dX==cellWidth ||this.dY==this.dY && this.dX==cellWidth && this.dY==cellHeight  )
@@ -778,8 +818,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
     }
     checkMate()
     {
-       // if(this.color=="white")
-       // {
+      
             let check=[];
         for(let i=0;i<chessPlate.length;i++)
         {
@@ -790,14 +829,13 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         }
         if(check.every(elem=>elem.figure.move(this.x, this.y)==false)==true)
         {
-            check=[];
             return true;
         }
         else
         {
             return false;
         }
-      //  }
+      
 }
 mate()
 {
@@ -806,14 +844,14 @@ mate()
     {
     if(chessPlate[i].figure!=null && chessPlate[i].figure.color==this.color)
     {
-        check.push(chessPlate[i])
+        check.push(chessPlate[i]);
     }
     }
     for(let i=0;i<check.length;i++)
     {
         for(let j=0;j<chessPlate.length;j++)
         {
-            if(check[i].figure.move(chessPlate[j].coords.x, chessPlate[j].coords.y)==true)
+            if(check[i].figure.move(chessPlate[j].coords.x, chessPlate[j].coords.y)==true )
             {
                 let tempFigure=check[i].figure;
                 let tempX=check[i].coords.x;
@@ -821,6 +859,7 @@ mate()
                 chessPlate[j].figure=check[i].figure;
                 chessPlate[j].figure.x=check[i].coords.x;
                 chessPlate[j].figure.y=check[i].coords.y;
+                chessPlate[j].figure.square=chessPlate[j];
                 check[i].figure=null;
                 if(this.checkMate()==true)
                 {
@@ -828,22 +867,24 @@ mate()
                    check[i].figure.x=tempX;
                    check[i].figure.y=tempY;
                     chessPlate[j].figure=null;
+                  
                     return true;
                 }
                 
-                else
+                else 
                 {    
-                    check[i].figure=tempFigure;
-                    check[i].figure.x=tempX;
-                    check[i].figure.y=tempY;
-                    chessPlate[j].figure=null;
+                   check[i].figure=tempFigure;
+                   check[i].figure.x=tempX;
+                  check[i].figure.y=tempY;
+                   chessPlate[j].figure=null;
+                    
                     continue;
                 } 
         }
-        else
-        {
-            continue;
-        }
+       else
+       {
+          continue;
+       }
         }
     
 }
@@ -870,18 +911,19 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move(kingX,kingY)
+    move(kingX,kingY, nextCelll)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
-        if(kingX!=undefined && kingY!=undefined)
+        if(kingX!=undefined && kingY!=undefined && nextCelll!=undefined) 
         {
         this.nextX=kingX;
         this.nextY=kingY
+        this.nextCell=nextCelll;
         }
         this.dY=Math.abs(this.nextY-this.y);
         this.square=prevActiveCell;
-        if(this.color=="white" && this.x==this.nextX && nextCell.figure==null)
+        if(this.color=="white" && this.x==this.nextX && this.nextCell.figure==null)
         {
             if(this.y==this.startY )
             {
@@ -899,11 +941,11 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
                 }
             }
         }
-        else if(this.color=="white"  && nextCell.figure!=null && this.nextX==this.x+cellWidth || this.nextX==this.x-cellWidth)
+        else if(this.color=="white"  && this.nextCell.figure!=null && this.nextX==this.x+cellWidth || this.nextX==this.x-cellWidth)
         {
             return true;
         }
-        else if(this.color=="black" && this.x==this.nextX && nextCell.figure==null)
+        else if(this.color=="black" && this.x==this.nextX && this.nextCell.figure==null)
         {
             if(this.y==this.startY )
             {
@@ -921,7 +963,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
                 }
             }
         }
-        else if(this.color=="black"  && nextCell.figure!=null && this.nextX==this.x+cellWidth || this.nextX==this.x-cellWidth)
+        else if(this.color=="black"  && this.nextCell.figure!=null && this.nextX==this.x+cellWidth || this.nextX==this.x-cellWidth)
         {
             return true;
         }

@@ -82,3 +82,22 @@ var chessPlate=
             return true;
         }
       //  }
+
+
+
+
+
+
+
+                if(turn=="white")
+                {
+                    winCheckKingColor=blackKing;
+                }  
+                else
+                {
+                   winCheckKingColor=whiteKing;
+                }
+                if(winCheckKingColor.mate()!=true)
+                {
+                    alert('ss')
+                }
