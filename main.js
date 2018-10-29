@@ -231,12 +231,64 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
        
                 }
         
-}
+}       
+        else if(chessPlate[i].figure.color==prevActiveCell.figure.color && prevActiveCell.figure.castling==true) //castling
+        {
+            if(turn=="white")
+            {
+                kingColor=whiteKing;
+                winCheckKingColor=blackKing;
+            }  
+            else
+            {
+                kingColor=blackKing;
+                winCheckKingColor=whiteKing;
+            }
+            console.log('castling')
+                let tempFigure=prevActiveCell.figure;
+                let tempFigure2=chessPlate[i].figure;
+                let tempX=prevActiveCell.coords.x;
+                let tempY=prevActiveCell.coords.y;
+                let tempSquare=prevActiveCell.figure.square;
+                chessPlate[i].figure=prevActiveCell.figure;
+                chessPlate[i].figure.x=chessPlate[i].coords.x;
+                chessPlate[i].figure.y=chessPlate[i].coords.y;
+                chessPlate[i].figure.square=chessPlate[i];
+                prevActiveCell.figure=null;
+                if(winCheckKingColor.mate()!=true)
+        {
+            ctx.font = "100px Arial";
+            ctx.fillStyle = "green";
+            ctx.strokeText(kingColor.color+' win',canvas.clientWidth/2-cellWidth*2,canvas.clientHeight/2);
+            ctx.fillText(kingColor.color  +' win',canvas.clientWidth/2-cellWidth*2,canvas.clientHeight/2);
+        }
+                if(kingColor.checkMate()==false)
+                {    
+                    prevActiveCell.figure=tempFigure;
+                  
+                    prevActiveCell.figure.x=tempX;
+                    prevActiveCell.figure.y=tempY;
+                    prevActiveCell.figure.square=tempSquare
+                    chessPlate[i].figure=tempFigure2;
+                }
+                else
+                {
+                    if(turn=="white")
+        {
+            turn="black";
+        }
+        else
+        {
+            turn="white";
+        } 
+        cellCanMove=false;
+       
+                }
+        }
 
         drawFigures();
        
        }
-
        ctx.fillRect(prevActiveCell.coords.x-cellWidth, prevActiveCell.coords.y-cellHeight, cellWidth,cellHeight);
        prevActiveCell.isActive=false;
        
@@ -317,7 +369,7 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-   move(kingX, kingY)
+   move(kingX, kingY, mate)
    {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
@@ -325,7 +377,15 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         //this.square=prevActiveCell;
         if(kingX!=undefined && kingY!=undefined)
         {
-        this.nextCell=winCheckKingColor.square; //this.nextCell=kingColor.square;
+            if(mate)
+            {
+            this.nextCell=winCheckKingColor.square;
+            }
+            else
+            {
+            this.nextCell=kingColor.square;
+            }
+           
         this.nextX=kingX;
         this.nextY=kingY;
         }   
@@ -432,7 +492,7 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move(kingX, kingY)
+    move(kingX, kingY, mate)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
@@ -441,7 +501,15 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         {
         this.nextX=kingX;
         this.nextY=kingY
+        if(mate)
+        {
         this.nextCell=winCheckKingColor.square;
+        }
+        else
+        {
+        this.nextCell=kingColor.square;
+        }
+       
         }
         this.square=prevActiveCell;
         this.dX=Math.abs(this.nextX-this.x);
@@ -539,7 +607,7 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move(kingX, kingY, nextCelll)
+    move(kingX, kingY, mate)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
@@ -548,7 +616,14 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         {
         this.nextX=kingX;
         this.nextY=kingY;
+        if(mate==true)
+        {
         this.nextCell=winCheckKingColor.square;
+        }
+        else
+        {
+        this.nextCell=kingColor.square
+        }
         }
       // else{
        //  this.square=prevActiveCell;
@@ -753,7 +828,7 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move(kingX, kingY)
+    move(kingX, kingY, mate)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
@@ -761,9 +836,16 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         {
         this.nextX=kingX;
         this.nextY=kingY;
+        if(mate)
+        {
         this.nextCell=winCheckKingColor.square;
         }
-        //this.square=prevActiveCell;
+        else
+        {
+        this.nextCell=kingColor.square;
+        }
+       
+        }
         this.dX=Math.abs(this.nextX-this.x);
         this.dY=Math.abs(this.nextY-this.y);
         if(this.dX==cellWidth*2 && this.dY==cellHeight|| this.dX==cellWidth && this.dY==cellHeight*2)
@@ -783,6 +865,7 @@ class King extends Figure
     {
         super(color, square);
         square.figure=this;
+        this.moveMade=false;
 if(this.color=="white")
 {
     this.sprite=new Image();
@@ -798,6 +881,10 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
     }
     move(kingX, kingY)
     {
+        if(this.moveMade==false)
+        {
+            this.moveMade=true;
+        }
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
         if(kingX!=undefined && kingY!=undefined )
@@ -812,8 +899,13 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
        // }
         this.dX=Math.abs(this.nextX-this.x);
         this.dY=Math.abs(this.nextY-this.y);
-        if(this.x==this.nextX && this.dY==cellHeight ||this.y==this.nextY &&this.dX==cellWidth ||this.dY==this.dY && this.dX==cellWidth && this.dY==cellHeight  )
+        if(this.x==this.nextX && this.dY==cellHeight ||this.y==this.nextY &&this.dX==cellWidth ||this.dY==this.dY && this.dX==cellWidth && this.dY==cellHeight)
         {
+            return true;
+        }
+        else if(this.moveMade==false && this.nextCell.moveMade==false)
+        {
+            this.castling=true;
             return true;
         }
         else
@@ -832,7 +924,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             check.push(chessPlate[i])
         }
         }
-        if(check.every(elem=>elem.figure.move(this.x, this.y)==false)==true)
+        if(check.every(elem=>elem.figure.move(this.x, this.y, false)==false)==true)
         {
             return true;
         }
@@ -856,7 +948,7 @@ mate()
     {
         for(let j=0;j<chessPlate.length;j++)
         {
-            if(check[i].figure.move(chessPlate[j].coords.x, chessPlate[j].coords.y)==true )
+            if(check[i].figure.move(chessPlate[j].coords.x, chessPlate[j].coords.y, true)==true )
             {
                 let tempFigure=check[i].figure;
                 let tempFigure2=chessPlate[j].figure;
@@ -921,7 +1013,7 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move(kingX,kingY)
+    move(kingX,kingY, mate)
     {
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
@@ -930,7 +1022,15 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         {
         this.nextX=kingX;
         this.nextY=kingY
+        if(mate)
+        {
         this.nextCell=winCheckKingColor.square;
+        }
+        else
+        {
+        this.nextCell=kingColor.square;
+        }
+       
         }
       //  this.dY=Math.abs(this.nextY-this.y)
       this.dY=this.y-this.nextY;
@@ -1055,11 +1155,11 @@ if(true)
 
 whiteKing=new King("white", chessPlate[4]);
 blackKing=new King("black", chessPlate[60]);
-//let blackRook=new Rook("black", chessPlate[63]);
-//let blackRook2=new Rook("black", chessPlate[56]);
+let blackRook=new Rook("black", chessPlate[63]);
+let blackRook2=new Rook("black", chessPlate[56]);
 //let whiteQueen=new Queen("white", chessPlate[3]);
-//let whiteRook=new Rook("white", chessPlate[0]);
-//let whiteRook2=new Rook("white", chessPlate[7]);
+let whiteRook=new Rook("white", chessPlate[0]);
+let whiteRook2=new Rook("white", chessPlate[7]);
 let blackKnight=new Knight("black", chessPlate[62]);
 let blackKnight2=new Knight("black", chessPlate[57]);
 let blackBishop=new Bishop("black", chessPlate[61]);
