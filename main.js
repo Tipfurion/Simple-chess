@@ -192,11 +192,16 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
                 let tempX=prevActiveCell.coords.x;
                 let tempY=prevActiveCell.coords.y;
                 let tempSquare=prevActiveCell.figure.square;
+                let tempMoveMade=this.moveMade;
                 chessPlate[i].figure=prevActiveCell.figure;
                 chessPlate[i].figure.x=chessPlate[i].coords.x;
                 chessPlate[i].figure.y=chessPlate[i].coords.y;
                 chessPlate[i].figure.square=chessPlate[i];
                 prevActiveCell.figure=null;
+                if(prevActiveCell.figure!=undefined)
+                {
+                prevActiveCell.figure.moveMade=true;  
+                }
                 if(winCheckKingColor.mate()!=true)
         {
             ctx.font = "100px Arial";
@@ -204,18 +209,14 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
             ctx.strokeText(kingColor.color+' win',canvas.clientWidth/2-cellWidth*2,canvas.clientHeight/2);
             ctx.fillText(kingColor.color  +' win',canvas.clientWidth/2-cellWidth*2,canvas.clientHeight/2);
         }
-                if(kingColor.checkMate()==false)
+                if(kingColor.checkMate(false)==false)
                 {    
                     prevActiveCell.figure=tempFigure;
-                  
+                    prevActiveCell.figure.moveMade=tempMoveMade;
                     prevActiveCell.figure.x=tempX;
                     prevActiveCell.figure.y=tempY;
                     prevActiveCell.figure.square=tempSquare
                     chessPlate[i].figure=tempFigure2;
-                 //  if(kingColor.mate()!=true)
-                  //  {
-                  //      alert('ss');
-                   // }
                 }
                 else
                 {
@@ -232,59 +233,8 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
                 }
         
 }       
-        else if(chessPlate[i].figure.color==prevActiveCell.figure.color && prevActiveCell.figure.castling==true) //castling
-        {
-            if(turn=="white")
-            {
-                kingColor=whiteKing;
-                winCheckKingColor=blackKing;
-            }  
-            else
-            {
-                kingColor=blackKing;
-                winCheckKingColor=whiteKing;
-            }
-            console.log('castling')
-                let tempFigure=prevActiveCell.figure;
-                let tempFigure2=chessPlate[i].figure;
-                let tempX=prevActiveCell.coords.x;
-                let tempY=prevActiveCell.coords.y;
-                let tempSquare=prevActiveCell.figure.square;
-                chessPlate[i].figure=prevActiveCell.figure;
-                chessPlate[i].figure.x=chessPlate[i].coords.x;
-                chessPlate[i].figure.y=chessPlate[i].coords.y;
-                chessPlate[i].figure.square=chessPlate[i];
-                prevActiveCell.figure=null;
-                if(winCheckKingColor.mate()!=true)
-        {
-            ctx.font = "100px Arial";
-            ctx.fillStyle = "green";
-            ctx.strokeText(kingColor.color+' win',canvas.clientWidth/2-cellWidth*2,canvas.clientHeight/2);
-            ctx.fillText(kingColor.color  +' win',canvas.clientWidth/2-cellWidth*2,canvas.clientHeight/2);
-        }
-                if(kingColor.checkMate()==false)
-                {    
-                    prevActiveCell.figure=tempFigure;
-                  
-                    prevActiveCell.figure.x=tempX;
-                    prevActiveCell.figure.y=tempY;
-                    prevActiveCell.figure.square=tempSquare
-                    chessPlate[i].figure=tempFigure2;
-                }
-                else
-                {
-                    if(turn=="white")
-        {
-            turn="black";
-        }
-        else
-        {
-            turn="white";
-        } 
-        cellCanMove=false;
+        
        
-                }
-        }
 
         drawFigures();
        
@@ -348,6 +298,8 @@ this.color=color;
 this.square=square;
 this.x=square.coords.x;
 this.y=square.coords.y;
+this.moveMade=false;
+this.type=0;
 }    
 }
 class Rook extends Figure
@@ -374,7 +326,6 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
         this.nextCell=nextCell;
-        //this.square=prevActiveCell;
         if(kingX!=undefined && kingY!=undefined)
         {
             if(mate)
@@ -398,7 +349,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
        {
        if(this.y>=this.nextY)
        {
-        for(let i=this.square.number+8; i<=this.nextCell.number; i+=8)
+        for(let i=this.square.number+8; i<this.nextCell.number; i+=8)
         {
          checkX.push(chessPlate[i]);
         }
@@ -865,7 +816,7 @@ class King extends Figure
     {
         super(color, square);
         square.figure=this;
-        this.moveMade=false;
+        this.type=1;
 if(this.color=="white")
 {
     this.sprite=new Image();
@@ -879,33 +830,27 @@ else
 }
 this.draw(this.x-cellWidth,this.y-cellHeight);
     }
-    move(kingX, kingY)
+    move(kingX, kingY, mate)
     {
-        if(this.moveMade==false)
-        {
-            this.moveMade=true;
-        }
         this.nextX=nextCell.coords.x;
         this.nextY=nextCell.coords.y;
         if(kingX!=undefined && kingY!=undefined )
         {
         this.nextX=kingX;
         this.nextY=kingY;
+        if(mate)
+        {
+        this.nextCell=winCheckKingColor.square;
+        }
+        else
+        {
         this.nextCell=kingColor.square;
         }
-       // else
-       // {
-           // this.square=prevActiveCell;
-       // }
+        }
         this.dX=Math.abs(this.nextX-this.x);
         this.dY=Math.abs(this.nextY-this.y);
         if(this.x==this.nextX && this.dY==cellHeight ||this.y==this.nextY &&this.dX==cellWidth ||this.dY==this.dY && this.dX==cellWidth && this.dY==cellHeight)
         {
-            return true;
-        }
-        else if(this.moveMade==false && this.nextCell.moveMade==false)
-        {
-            this.castling=true;
             return true;
         }
         else
@@ -913,7 +858,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             return false;
         }
     }
-    checkMate()
+    checkMate(mate)
     {
       
             let check=[];
@@ -924,7 +869,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             check.push(chessPlate[i])
         }
         }
-        if(check.every(elem=>elem.figure.move(this.x, this.y, false)==false)==true)
+        if(check.every(elem=>elem.figure.move(this.x, this.y, mate)==false)==true)
         {
             return true;
         }
@@ -960,7 +905,7 @@ mate()
                 chessPlate[j].figure.y=chessPlate[j].coords.y;
                 chessPlate[j].figure.square=chessPlate[j];
                 check[i].figure=null;
-                if(this.checkMate()==true)
+                if(this.checkMate(true)==true)
                 {
                     check[i].figure=tempFigure;
                    check[i].figure.x=tempX;
