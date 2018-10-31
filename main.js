@@ -100,6 +100,18 @@ function drawFigures()
     {
         if(chessPlate[i].figure!=null)
         {
+            
+            if(chessPlate[i].color=="white" && !chessPlate[i].isActive)
+            {
+            ctx.fillStyle =whiteCellColor; 
+            ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth, cellHeight) 
+            }
+            
+           else if (chessPlate[i].color=="black" && !chessPlate[i].isActive)
+            {
+            ctx.fillStyle=blackCellColor;
+            ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth, cellHeight) 
+            }
             chessPlate[i].figure.draw();
         }
     }
@@ -166,7 +178,7 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
     }
     if(prevActiveCell!=undefined)
     {
-       clearCells();
+      // clearCells();
        nextCell=chessPlate[i];
        
        if(cellCanMove && prevActiveCell!=undefined&& prevActiveCell.figure!=null &&prevActiveCell.figure.move()==true && turn==prevActiveCell.figure.color )
@@ -362,11 +374,15 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
  }    
        }
        drawFigures();
-
+       clearCells();
 
 
        ctx.fillRect(prevActiveCell.coords.x-cellWidth, prevActiveCell.coords.y-cellHeight, cellWidth,cellHeight);
-       prevActiveCell.isActive=false;
+       if(chessPlate[i]!=prevActiveCell)
+       {
+        prevActiveCell.isActive=false;
+       }
+       
        
 
       
@@ -390,8 +406,9 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
         ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth,cellHeight);  
     }
    
-    drawText();
+    
     drawFigures();
+    drawText();
   
     
 }
@@ -1183,11 +1200,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
     
 
 function setFigures()
-{
-    if(false)
-    {
-
-    
+{ 
 let whiteRook=new Rook("white", chessPlate[0]);
 let whiteRook2=new Rook("white", chessPlate[7]);
 let blackRook=new Rook("black", chessPlate[63]);
@@ -1204,40 +1217,23 @@ let blackKnight=new Knight("black", chessPlate[62]);
 let blackKnight2=new Knight("black", chessPlate[57]);
 whiteKing=new King("white", chessPlate[4]);
 blackKing=new King("black", chessPlate[60]);
-//let whitePawn= new Pawn("white", chessPlate[8])
-//let whitePawn2= new Pawn("white", chessPlate[9])
-//let whitePawn3= new Pawn("white", chessPlate[10])
-//let whitePawn4= new Pawn("white", chessPlate[11])
-//let whitePawn5= new Pawn("white", chessPlate[12])
+let whitePawn= new Pawn("white", chessPlate[8])
+let whitePawn2= new Pawn("white", chessPlate[9])
+let whitePawn3= new Pawn("white", chessPlate[10])
+let whitePawn4= new Pawn("white", chessPlate[11])
+let whitePawn5= new Pawn("white", chessPlate[12])
 let whitePawn6= new Pawn("white", chessPlate[13])
 let whitePawn7= new Pawn("white", chessPlate[14])
 let whitePawn8= new Pawn("white", chessPlate[15])
 let blackPawn= new Pawn("black",chessPlate[55])
 let blackPawn2= new Pawn("black",chessPlate[54])
 let blackPawn3= new Pawn("black",chessPlate[53])
-//let blackPawn4= new Pawn("black",chessPlate[52])
-//let blackPawn5= new Pawn("black",chessPlate[51])
-//let blackPawn6= new Pawn("black",chessPlate[50])
-//let blackPawn7= new Pawn("black",chessPlate[49])
-//let blackPawn8= new Pawn("black",chessPlate[48])
-    }
-if(true)
-{
-
-
-whiteKing=new King("white", chessPlate[4]);
-blackKing=new King("black", chessPlate[60]);
-let blackRook=new Rook("black", chessPlate[63]);
-let blackRook2=new Rook("black", chessPlate[56]);
-let whiteQueen=new Queen("white", chessPlate[3]);
-let whiteRook=new Rook("white", chessPlate[0]);
-let whiteRook2=new Rook("white", chessPlate[7]);
-let blackKnight=new Knight("black", chessPlate[62]);
-let blackKnight2=new Knight("black", chessPlate[57]);
-let blackBishop=new Bishop("black", chessPlate[61]);
-let blackBishop2=new Bishop("black", chessPlate[58]);
-let blackQueen=new Queen("black", chessPlate[59]);
-}
+let blackPawn4= new Pawn("black",chessPlate[52])
+let blackPawn5= new Pawn("black",chessPlate[51])
+let blackPawn6= new Pawn("black",chessPlate[50])
+let blackPawn7= new Pawn("black",chessPlate[49])
+let blackPawn8= new Pawn("black",chessPlate[48])    
 setTimeout(drawFigures,100)
+setTimeout(drawText,150)
 }
 setFigures();
