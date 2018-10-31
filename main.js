@@ -229,7 +229,8 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
         
        }
       else if(cellCanMove && prevActiveCell!=undefined&& prevActiveCell.figure!=null &&prevActiveCell.figure.type==1 && 
-        turn==prevActiveCell.figure.color && chessPlate[i].figure.color==prevActiveCell.figure.color && prevActiveCell.figure.moveMade==false && chessPlate[i].figure.moveMade==false && prevActiveCell!=chessPlate[i] )
+        turn==prevActiveCell.figure.color&& chessPlate[i].figure!=null && chessPlate[i].figure.color==prevActiveCell.figure.color && prevActiveCell.figure.moveMade==false 
+        && chessPlate[i].figure.moveMade==false && prevActiveCell!=chessPlate[i] )
        {
         console.log("castling");
         if(turn=="white")
@@ -358,11 +359,8 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
     cellCanMove=false;
     
             }
- }
-        
+ }    
        }
-
-
        drawFigures();
 
 
@@ -391,6 +389,7 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
 
         ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth,cellHeight);  
     }
+   
     drawText();
     drawFigures();
   

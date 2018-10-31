@@ -101,3 +101,21 @@ var chessPlate=
                 {
                     alert('ss')
                 }
+
+
+
+
+
+
+
+                if(chessPlate[i].color=="white")
+            {
+            ctx.fillStyle =whiteCellColor; 
+            ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth, cellHeight) 
+            }
+            
+            else
+            {
+            ctx.fillStyle=blackCellColor;
+            ctx.fillRect(chessPlate[i].coords.x-cellWidth, chessPlate[i].coords.y-cellHeight, cellWidth, cellHeight) 
+            }
