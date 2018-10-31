@@ -254,10 +254,8 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
         let tempMoveMade2=chessPlate[i].figure.moveMade;
         if(prevActiveCell.figure.color=="white") // white castling
         {
-        if(prevActiveCell.figure.x>chessPlate[i].figure.x  ) // white long castling
+        if(prevActiveCell.figure.x>chessPlate[i].figure.x && chessPlate[1].figure==null && chessPlate[2].figure==null &&  chessPlate[3].figure==null ) // white long castling
         {
-            if(chessPlate[1].figure==null && chessPlate[2].figure==null &&  chessPlate[3].figure==null)
-            {
         chessPlate[3].figure=tempFigure2;
         chessPlate[3].figure.x=chessPlate[3].coords.x;
         chessPlate[3].figure.y=chessPlate[3].coords.y;
@@ -270,7 +268,7 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
         chessPlate[2].figure.square=chessPlate[2];
         chessPlate[2].figure.moveMade=true;  
         prevActiveCell.figure=null;
-            }
+        castlingCheck();
         }  
         else if(prevActiveCell.figure.x<chessPlate[i].figure.x && chessPlate[5].figure==null && chessPlate[6].figure==null ) // white short castling
         {
@@ -286,6 +284,7 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
         chessPlate[6].figure.square=chessPlate[6];
         chessPlate[6].figure.moveMade=true;  
         prevActiveCell.figure=null;
+        castlingCheck();
         }   
         }
         else //black castling
@@ -304,6 +303,7 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
         chessPlate[58].figure.square=chessPlate[58];
         chessPlate[58].figure.moveMade=true;  
         prevActiveCell.figure=null;
+        castlingCheck();
         }  
         else if(prevActiveCell.figure.x<chessPlate[i].figure.x && chessPlate[61].figure==null && chessPlate[62].figure==null ) // black short castling
         {
@@ -319,42 +319,46 @@ if(clickX>=chessPlate[i].coords.x-cellWidth && clickX <= chessPlate[i].coords.x 
         chessPlate[62].figure.square=chessPlate[62];
         chessPlate[62].figure.moveMade=true;  
         prevActiveCell.figure=null;
+        castlingCheck();
         } 
         }
-        if(winCheckKingColor.mate()!=true)
-{
-    ctx.font = "100px Arial";
-    ctx.fillStyle = "green";
-    ctx.strokeText(kingColor.color+' win',canvas.clientWidth/2-cellWidth*2,canvas.clientHeight/2);
-    ctx.fillText(kingColor.color  +' win',canvas.clientWidth/2-cellWidth*2,canvas.clientHeight/2);
-}
-        if(kingColor.checkMate(false)==false)
-        {    
-            prevActiveCell.figure=tempFigure;
-            prevActiveCell.figure.x=tempX;
-            prevActiveCell.figure.y=tempY;
-            prevActiveCell.figure.square=tempSquare;
-            prevActiveCell.figure.moveMade=tempMoveMade1;
-            chessPlate[i].figure=tempFigure2;
-            chessPlate[i].figure.x=tempX2;
-            chessPlate[i].figure.y=tempY2;
-            chessPlate[i].figure.square=tempSquare2;
-            chessPlate[i].figure.moveMade=tempMoveMade2;
-            
-        }
-        else
-        {
-            if(turn=="white")
-{
-    turn="black";
-}
-else
-{
-    turn="white";
-} 
-cellCanMove=false;
-
-        }
+ function castlingCheck()
+ {
+    if(winCheckKingColor.mate()!=true)
+    {
+        ctx.font = "100px Arial";
+        ctx.fillStyle = "green";
+        ctx.strokeText(kingColor.color+' win',canvas.clientWidth/2-cellWidth*2,canvas.clientHeight/2);
+        ctx.fillText(kingColor.color  +' win',canvas.clientWidth/2-cellWidth*2,canvas.clientHeight/2);
+    }
+            if(kingColor.checkMate(false)==false)
+            {    
+                prevActiveCell.figure=tempFigure;
+                prevActiveCell.figure.x=tempX;
+                prevActiveCell.figure.y=tempY;
+                prevActiveCell.figure.square=tempSquare;
+                prevActiveCell.figure.moveMade=tempMoveMade1;
+                chessPlate[i].figure=tempFigure2;
+                chessPlate[i].figure.x=tempX2;
+                chessPlate[i].figure.y=tempY2;
+                chessPlate[i].figure.square=tempSquare2;
+                chessPlate[i].figure.moveMade=tempMoveMade2;
+                
+            }
+            else
+            {
+                if(turn=="white")
+    {
+        turn="black";
+    }
+    else
+    {
+        turn="white";
+    } 
+    cellCanMove=false;
+    
+            }
+ }
         
        }
 
