@@ -28,7 +28,7 @@ let chessPlate=
 
 drawField();
 
-setInterval(ping,100);
+
 function drawField()
 {
 
@@ -423,13 +423,6 @@ canvas.addEventListener('click', function(event) {
     cellClick()
 }, false);
 
-
-function ping()
-{
- 
-   let r;
-   r++;
-}
 class Figure 
 {
 draw(x,y)
@@ -627,6 +620,10 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
               
               checkX=[]
               return true; 
+            }
+            else
+            {
+                return false;
             }
             }
             else
@@ -1037,8 +1034,10 @@ mate()
     {
         for(let j=0;j<chessPlate.length;j++)
         {
-            if(check[i].figure.move(chessPlate[j].coords.x, chessPlate[j].coords.y, true)==true )
+            if(check[i].figure.move(chessPlate[j].coords.x, chessPlate[j].coords.y, true)==true)   //if(check[i].figure.move(chessPlate[j].coords.x, chessPlate[j].coords.y, true)==true )
             {
+                if(chessPlate[j].figure == null || check[i].figure.color != chessPlate[j].figure.color)
+                {
                 let tempFigure=check[i].figure;
                 let tempFigure2=chessPlate[j].figure;
                 let tempX=check[i].coords.x;
@@ -1049,15 +1048,18 @@ mate()
                 chessPlate[j].figure.y=chessPlate[j].coords.y;
                 chessPlate[j].figure.square=chessPlate[j];
                 check[i].figure=null;
+                
                 if(this.checkMate(true)==true)
                 {
+                    
                     check[i].figure=tempFigure;
-                   check[i].figure.x=tempX;
-                   check[i].figure.y=tempY;
-                   check[i].figure.square=tempSquare;
+                    check[i].figure.x=tempX;
+                    check[i].figure.y=tempY;
+                    check[i].figure.square=tempSquare;
                     chessPlate[j].figure=tempFigure2;
-                   
+                        
                     return true;
+                    
                 }
                 
                 else 
@@ -1071,6 +1073,7 @@ mate()
                   // check=[];
                     continue;
                 } 
+            }   
         }
        else
        {
@@ -1204,7 +1207,7 @@ function setFigures()
 let whiteRook=new Rook("white", chessPlate[0]);
 let whiteRook2=new Rook("white", chessPlate[7]);
 let blackRook=new Rook("black", chessPlate[63]);
-let blackRook2=new Rook("black", chessPlate[56]);
+let blackRook2=new Rook("black", chessPlate[56]); 
 let whiteBishop=new Bishop("white", chessPlate[2]);
 let whiteBishop2=new Bishop("white", chessPlate[5]);
 let blackBishop=new Bishop("black", chessPlate[61]);
@@ -1224,8 +1227,8 @@ let whitePawn4= new Pawn("white", chessPlate[11])
 let whitePawn5= new Pawn("white", chessPlate[12])
 let whitePawn6= new Pawn("white", chessPlate[13])
 let whitePawn7= new Pawn("white", chessPlate[14])
-let whitePawn8= new Pawn("white", chessPlate[15])
-let blackPawn= new Pawn("black",chessPlate[55])
+let whitePawn8= new Pawn("white", chessPlate[15]) 
+ let blackPawn= new Pawn("black",chessPlate[55])
 let blackPawn2= new Pawn("black",chessPlate[54])
 let blackPawn3= new Pawn("black",chessPlate[53])
 let blackPawn4= new Pawn("black",chessPlate[52])
