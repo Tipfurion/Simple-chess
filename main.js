@@ -599,7 +599,7 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
         }
        
         }
-        this.square=prevActiveCell;
+        //this.square=prevActiveCell;
         this.dX=Math.abs(this.nextX-this.x);
         this.dY=Math.abs(this.nextY-this.y);
         if(this.dX==this.dY)
@@ -638,6 +638,11 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              checkX=[]
              return true;    
             }
+            else
+            {
+                return false;
+            }
+
         }
         }
         else
@@ -654,6 +659,11 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
               checkX=[]
               return true; 
             }
+            else
+            {
+                return false;
+            }
+
             }
             else
             {
@@ -667,6 +677,11 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
              checkX=[]
              return true;    
             }
+            else
+            {
+                return false;
+            }
+
 
          
 
@@ -1197,6 +1212,13 @@ this.draw(this.x-cellWidth,this.y-cellHeight);
             return false;
         }
     }
+}
+function winMessage(color)
+{
+    let div = document.createElement("div");
+    div.id ="divWinMessage";
+    div.style.backgroundColor = "green";
+    div.innerHTML = `${color} win`;
 }
 
 
