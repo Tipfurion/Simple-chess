@@ -970,7 +970,9 @@ function setFigures() {
     let blackPawn6 = new Pawn("black", chessPlate[50])
     let blackPawn7 = new Pawn("black", chessPlate[49])
     let blackPawn8 = new Pawn("black", chessPlate[48])
-    setTimeout(drawFigures, 100)
-    setTimeout(drawText, 150)
+    window.onload = function(){
+        setTimeout(drawFigures, 100)
+        setTimeout(drawText, 150)
+    }
 }
 setFigures();
