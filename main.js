@@ -929,7 +929,7 @@ function winMessage(color) {
     let div = document.createElement("div");
     div.id = "divWinMessage";
     div.style.backgroundColor = "green";
-    div.innerHTML = `${color} won`;
+    div.innerHTML = `<span>${color} won </span>`;
     a.appendChild(div);
 }
 
@@ -937,6 +937,7 @@ function winMessage(color) {
 
 
 function setFigures() {
+   // winMessage("black")
     let whiteRook = new Rook("white", chessPlate[0]);
     let whiteRook2 = new Rook("white", chessPlate[7]);
     let blackRook = new Rook("black", chessPlate[63]);
